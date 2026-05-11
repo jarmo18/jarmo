@@ -1,28 +1,28 @@
-#!/bin/bash
-
 # Kontrollime, kas kasutaja andis laiendi argumendina
-if [ -z "$1" ]; then
-    echo "Palun sisesta otsitav laiend käsureal."
-    echo "Näide: ./task_02.sh txt"
+if ($args.Count -eq 0) {
+    Write-Host "Palun sisesta otsitav laiend käsureal."
+    Write-Host "Näide: powershell -File task.02.ps txt"
     exit 1
-fi
+}
 
 # Laiendi salvestamine muutujasse
-extension="$1"
+$extension = $args[0]
 
 # Faili kontroll
-file="random.txt"
-if [ ! -f "$file" ]; then
-    echo "Fail '$file' ei leidu. Käivita kõigepealt task_01.sh."
-    exit 1
-fi
+$file = "random.txt"
 
-# Arvutame, mitu korda laiend failis esineb
-count=$(grep -c -w "$extension" "$file")
+if (!(Test-Path $file)) {
+    Write-Host "Fail '$file' ei leidu. Käivita kõigepealt task01.ps."
+    exit 1
+}
+
+# Loeme mitu korda laiend esineb
+$count = (Get-Content $file | Where-Object { $_ -eq $extension }).Count
 
 # Tulemuse kuvamine
-if [ "$count" -gt 0 ]; then
-    echo "Laiend '$extension' esineb $count korda."
-else
-    echo "Laiend '$extension' ei leitud."
-fi
+if ($count -gt 0) {
+    Write-Host "Laiend '$extension' esineb $count korda."
+}
+else {
+    Write-Host "Laiend '$extension' ei leitud."
+}
